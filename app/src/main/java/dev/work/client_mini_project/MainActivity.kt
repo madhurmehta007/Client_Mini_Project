@@ -5,6 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
@@ -28,14 +32,15 @@ class MainActivity : AppCompatActivity() {
         logTextView = findViewById(R.id.text_log)
 
         connectButton.setOnClickListener {
-            connectToServer()
+            GlobalScope.launch(Dispatchers.IO) {
+                connectToServer()
+            }
         }
     }
 
-    private fun connectToServer() {
+    private suspend fun connectToServer() {
         log("Connecting to server: $host:$port")
 
-        thread {
             try {
                 val clientSocket = Socket(host, port)
 
@@ -78,13 +83,14 @@ class MainActivity : AppCompatActivity() {
                 val decryptedResponse = decryptMessage(response, shared_secret)
                 log("Received response: $decryptedResponse")
 
+                delay(2000)
                 // Close the connection
                 clientSocket.close()
                 log("Connection closed")
             } catch (e: Exception) {
                 log("Error: ${e.message}")
             }
-        }
+
     }
 
     private fun log(message: String) {
