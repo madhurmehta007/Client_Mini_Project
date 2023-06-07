@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        window.setStatusBarColor(this.getResources().getColor(R.color.transparent))
         connectButton = findViewById(R.id.button_connect)
         logTextView = findViewById(R.id.text_log)
 
