@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -19,8 +20,9 @@ import kotlin.concurrent.thread
 class MainActivity : AppCompatActivity() {
     private lateinit var connectButton: Button
     private lateinit var logTextView: TextView
+    private lateinit var logEditText: EditText
 
-    private val host = "192.168.1.38" // Replace with the actual server IP address
+    private val host = "100.72.0.228" // Replace with the actual server IP address
     private val port = 12345 // Replace with the actual server port
 
     @SuppressLint("MissingInflatedId")
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         window.setStatusBarColor(this.getResources().getColor(R.color.transparent))
         connectButton = findViewById(R.id.button_connect)
         logTextView = findViewById(R.id.text_log)
+        logEditText = findViewById(R.id.searchEditText)
 
         connectButton.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
@@ -72,7 +75,7 @@ class MainActivity : AppCompatActivity() {
                 log("Shared secret: $shared_secret")
 
                 // Send a message using the shared secret
-                val message = "Hello, server!"
+                val message = logEditText.text.toString()
                 val encryptedMessage = encryptMessage(message, shared_secret)
                 log("Sending message: $message")
                 writer.write(encryptedMessage + "\n")
