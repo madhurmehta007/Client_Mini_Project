@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import dev.work.client_mini_project.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -18,23 +20,25 @@ import java.util.Random
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var connectButton: Button
-    private lateinit var logTextView: TextView
-    private lateinit var logEditText: EditText
+    private lateinit var binding: ActivityMainBinding
 
-    private val host = "100.72.0.228" // Replace with the actual server IP address
+    private var host = "100.103.66.179" // Replace with the actual server IP address
     private val port = 12345 // Replace with the actual server port
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         window.setStatusBarColor(this.getResources().getColor(R.color.transparent))
-        connectButton = findViewById(R.id.button_connect)
-        logTextView = findViewById(R.id.text_log)
-        logEditText = findViewById(R.id.searchEditText)
 
-        connectButton.setOnClickListener {
+        binding.btnIP.setOnClickListener {
+            val etIP = binding.etIp.text.toString()
+            host = etIP
+            Toast.makeText(this, "IP Updated", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.buttonConnect.setOnClickListener {
             GlobalScope.launch(Dispatchers.IO) {
                 connectToServer()
             }
@@ -75,7 +79,7 @@ class MainActivity : AppCompatActivity() {
                 log("Shared secret: $shared_secret")
 
                 // Send a message using the shared secret
-                val message = logEditText.text.toString()
+                val message = binding.searchEditText.text.toString()
                 val encryptedMessage = encryptMessage(message, shared_secret)
                 log("Sending message: $message")
                 writer.write(encryptedMessage + "\n")
@@ -98,7 +102,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun log(message: String) {
         runOnUiThread {
-            logTextView.append("$message\n")
+            binding.textLog.append("$message\n")
         }
     }
 
